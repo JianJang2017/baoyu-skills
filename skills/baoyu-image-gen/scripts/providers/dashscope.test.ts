@@ -103,43 +103,59 @@ test("resolveSizeForModel validates explicit qwen-image-2.0 sizes by total pixel
 });
 
 test("resolveSizeForModel enforces fixed sizes for qwen-image-max/plus/image", () => {
-  assert.equal(
-    resolveSizeForModel("qwen-image-max", {
-      size: null,
-      aspectRatio: "1:1",
-      quality: "2k",
-    }),
-    "1328*1328",
-  );
+  const warnings: string[] = [];
+  const originalWarn = console.warn;
+  console.warn = (message?: unknown) => {
+    warnings.push(String(message));
+  };
 
-  assert.equal(
-    resolveSizeForModel("qwen-image", {
-      size: "1664x928",
-      aspectRatio: "9:16",
-      quality: "normal",
-    }),
-    "1664*928",
-  );
+  try {
+    assert.equal(
+      resolveSizeForModel("qwen-image-max", {
+        aspectRatio: null,
+        size: null,
+        quality: "2k",
+      }),
+      "1664*928",
+    );
 
-  assert.throws(
-    () =>
+    assert.equal(
+      resolveSizeForModel("qwen-image", {
+        size: "1664x928",
+        aspectRatio: "9:16",
+        quality: "normal",
+      }),
+      "1664*928",
+    );
+
+    assert.equal(
       resolveSizeForModel("qwen-image-max", {
         size: null,
         aspectRatio: "21:9",
         quality: "2k",
       }),
-    /supports only fixed ratios/,
-  );
+      "1664*928",
+    );
 
-  assert.throws(
-    () =>
-      resolveSizeForModel("qwen-image-plus", {
-        size: "1024x1024",
-        aspectRatio: null,
-        quality: "2k",
-      }),
-    /support only these sizes/,
-  );
+    assert.throws(
+      () =>
+        resolveSizeForModel("qwen-image-plus", {
+          size: "1024x1024",
+          aspectRatio: null,
+          quality: "2k",
+        }),
+      /support only these sizes/,
+    );
+
+    assert.ok(
+      warnings.some((message) => message.includes("do not support --quality (2k)")),
+    );
+    assert.ok(
+      warnings.some((message) => message.includes("do not support --quality (normal)")),
+    );
+  } finally {
+    console.warn = originalWarn;
+  }
 });
 
 test("DashScope size normalization converts WxH into provider format", () => {

@@ -169,6 +169,26 @@ function findKnownRatioKey(ar: string, candidates: string[], tolerance = 0.02): 
   return bestDiff <= tolerance ? bestKey : null;
 }
 
+function findClosestRatioKey(ar: string, candidates: string[]): string | null {
+  const targetRatio = getRatioValue(ar);
+  if (targetRatio == null) return null;
+
+  let bestKey: string | null = null;
+  let bestDiff = Infinity;
+
+  for (const candidate of candidates) {
+    const candidateRatio = getRatioValue(candidate);
+    if (candidateRatio == null) continue;
+    const diff = Math.abs(candidateRatio - targetRatio);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      bestKey = candidate;
+    }
+  }
+
+  return bestKey;
+}
+
 function roundToStep(value: number): number {
   return Math.max(SIZE_STEP, Math.round(value / SIZE_STEP) * SIZE_STEP);
 }
@@ -276,21 +296,12 @@ export function getQwen2SizeFromAspectRatio(ar: string | null, quality: CliArgs[
   return formatSize(fitted.width, fitted.height);
 }
 
-function getQwenFixedSizeFromAspectRatio(ar: string | null, quality: CliArgs["quality"]): string {
-  if (quality === "normal") {
-    console.warn(
-      "DashScope qwen-image-max/plus/image models use fixed output sizes; --quality normal does not change the generated resolution."
-    );
-  }
-
+function getQwenFixedSizeFromAspectRatio(ar: string | null): string {
   if (!ar) return QWEN_FIXED_SPEC.defaultSize;
 
-  const ratioKey = findKnownRatioKey(ar, Object.keys(QWEN_FIXED_SIZES_BY_RATIO));
+  const ratioKey = findClosestRatioKey(ar, Object.keys(QWEN_FIXED_SIZES_BY_RATIO));
   if (!ratioKey) {
-    throw new Error(
-      `DashScope model supports only fixed ratios ${Object.keys(QWEN_FIXED_SIZES_BY_RATIO).join(", ")}. ` +
-      `For custom ratios like "${ar}", use --model qwen-image-2.0-pro.`
-    );
+    throw new Error(`Invalid DashScope aspect ratio "${ar}". Expected <width>:<height>.`);
   }
 
   return QWEN_FIXED_SIZES_BY_RATIO[ratioKey]!;
@@ -329,11 +340,23 @@ function validateQwenFixedSize(size: string): string {
   return normalized;
 }
 
+function warnUnsupportedFixedQuality(quality: CliArgs["quality"]): void {
+  if (quality == null) return;
+  console.warn(
+    `DashScope qwen-image-max/plus/image models do not support --quality (${quality}); ` +
+    "the quality preset is ignored and the model uses a fixed official size."
+  );
+}
+
 export function resolveSizeForModel(
   model: string,
   args: Pick<CliArgs, "size" | "aspectRatio" | "quality">,
 ): string {
   const spec = getModelSpec(model);
+
+  if (spec.family === "qwenFixed") {
+    warnUnsupportedFixedQuality(args.quality);
+  }
 
   if (args.size) {
     if (spec.family === "qwen2") return validateQwen2Size(args.size);
@@ -347,7 +370,7 @@ export function resolveSizeForModel(
   }
 
   if (spec.family === "qwenFixed") {
-    return getQwenFixedSizeFromAspectRatio(args.aspectRatio, args.quality);
+    return getQwenFixedSizeFromAspectRatio(args.aspectRatio);
   }
 
   return getSizeFromAspectRatio(args.aspectRatio, args.quality);
