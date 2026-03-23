@@ -76,7 +76,7 @@ clawhub install baoyu-markdown-to-html
 |------|------|----------|
 | **content-skills** | 内容生成和发布 | [xhs-images](#baoyu-xhs-images), [infographic](#baoyu-infographic), [cover-image](#baoyu-cover-image), [slide-deck](#baoyu-slide-deck), [comic](#baoyu-comic), [article-illustrator](#baoyu-article-illustrator), [post-to-x](#baoyu-post-to-x), [post-to-wechat](#baoyu-post-to-wechat), [post-to-weibo](#baoyu-post-to-weibo) |
 | **ai-generation-skills** | AI 生成后端 | [image-gen](#baoyu-image-gen), [danger-gemini-web](#baoyu-danger-gemini-web) |
-| **utility-skills** | 内容处理工具 | [url-to-markdown](#baoyu-url-to-markdown), [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image), [format-markdown](#baoyu-format-markdown), [markdown-to-html](#baoyu-markdown-to-html), [translate](#baoyu-translate) |
+| **utility-skills** | 内容处理工具 | [youtube-transcript](#baoyu-youtube-transcript), [url-to-markdown](#baoyu-url-to-markdown), [danger-x-to-markdown](#baoyu-danger-x-to-markdown), [compress-image](#baoyu-compress-image), [format-markdown](#baoyu-format-markdown), [markdown-to-html](#baoyu-markdown-to-html), [translate](#baoyu-translate) |
 
 ## 更新技能
 
@@ -695,7 +695,7 @@ AI 驱动的生成后端。
 # 豆包（Seedream）
 /baoyu-image-gen --prompt "一只可爱的猫" --image cat.png --provider seedream
 
-# 带参考图（Google、OpenAI、OpenRouter 或 Replicate）
+# 带参考图（Google、OpenAI、OpenRouter、Replicate 或 Seedream 5.0/4.5/4.0）
 /baoyu-image-gen --prompt "把它变成蓝色" --image out.png --ref source.png
 ```
 
@@ -710,7 +710,7 @@ AI 驱动的生成后端。
 | `--ar` | 宽高比（如 `16:9`、`1:1`、`4:3`） |
 | `--size` | 尺寸（如 `1024x1024`） |
 | `--quality` | `normal` 或 `2k`（默认：`2k`） |
-| `--ref` | 参考图片（Google、OpenAI、OpenRouter 或 Replicate） |
+| `--ref` | 参考图片（Google、OpenAI、OpenRouter、Replicate 或 Seedream 5.0/4.5/4.0） |
 
 **环境变量**（配置方法见[环境配置](#环境配置)）：
 | 变量 | 说明 | 默认值 |
@@ -765,6 +765,40 @@ AI 驱动的生成后端。
 ### 工具技能 (Utility Skills)
 
 内容处理工具。
+
+#### baoyu-youtube-transcript
+
+下载 YouTube 视频字幕/转录文本和封面图片。支持多语言、翻译、章节分段和说话人识别。缓存原始数据以便快速重新格式化。
+
+```bash
+# 默认：带时间戳的 Markdown
+/baoyu-youtube-transcript https://www.youtube.com/watch?v=VIDEO_ID
+
+# 指定语言（按优先级排列）
+/baoyu-youtube-transcript https://youtu.be/VIDEO_ID --languages zh,en,ja
+
+# 章节分段 + 说话人识别
+/baoyu-youtube-transcript https://youtu.be/VIDEO_ID --chapters --speakers
+
+# SRT 字幕格式
+/baoyu-youtube-transcript https://youtu.be/VIDEO_ID --format srt
+
+# 列出可用字幕
+/baoyu-youtube-transcript https://youtu.be/VIDEO_ID --list
+```
+
+**选项**：
+| 选项 | 说明 | 默认值 |
+|------|------|--------|
+| `<url-or-id>` | YouTube URL 或视频 ID | 必填 |
+| `--languages <codes>` | 语言代码，逗号分隔 | `en` |
+| `--format <fmt>` | 输出格式：`text`、`srt` | `text` |
+| `--translate <code>` | 翻译为指定语言 | |
+| `--chapters` | 根据视频描述进行章节分段 | |
+| `--speakers` | 说话人识别（需 AI 后处理） | |
+| `--no-timestamps` | 禁用时间戳 | |
+| `--list` | 列出可用字幕 | |
+| `--refresh` | 强制重新获取，忽略缓存 | |
 
 #### baoyu-url-to-markdown
 

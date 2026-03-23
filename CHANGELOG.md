@@ -2,6 +2,127 @@
 
 English | [中文](./CHANGELOG.zh.md)
 
+## 1.79.0 - 2026-03-22
+
+### Features
+- `baoyu-post-to-wechat`: improve credential loading with multi-source resolution, priority ordering, and diagnostics for skipped incomplete sources
+
+## 1.78.0 - 2026-03-22
+
+### Features
+- `baoyu-url-to-markdown`: add URL-specific parser layer for X/Twitter and archive.ph sites
+- `baoyu-url-to-markdown`: improved slug generation with stop words removal and subdirectory output structure
+
+### Fixes
+- `baoyu-url-to-markdown`: preserve anchor elements containing media in legacy converter
+- `baoyu-url-to-markdown`: smarter title deduplication to avoid redundant headings
+
+## 1.77.0 - 2026-03-22
+
+### Features
+- `baoyu-youtube-transcript`: add end times to chapter data (by @jzOcb)
+
+### Fixes
+- `sync-clawhub`: skip failed skills instead of aborting
+
+## 1.76.1 - 2026-03-21
+
+### Documentation
+- `baoyu-youtube-transcript`: fix zsh glob issue — always single-quote YouTube URLs when running the script
+
+## 1.76.0 - 2026-03-21
+
+### Features
+- `baoyu-youtube-transcript`: add title heading, description summary, and cover image to markdown output
+
+### Fixes
+- `baoyu-markdown-to-html`: use process.execPath and tsx import in test runner
+
+## 1.75.0 - 2026-03-21
+
+### Features
+- `baoyu-youtube-transcript`: new skill — download YouTube video transcripts/subtitles and cover images with multi-language, chapters, and speaker identification support
+
+## 1.74.1 - 2026-03-21
+
+### Fixes
+- `baoyu-image-gen`: align OpenRouter image generation with current API, harden image support, and narrow Gemini aspect ratios (by @cwandev)
+- `baoyu-image-gen`: broaden OpenRouter model detection and aspect ratio validation
+
+## 1.74.0 - 2026-03-20
+
+### Features
+- `baoyu-markdown-to-html`: CLI now supports all rendering options — color, font-family, font-size, code-theme, mac-code-block, line-number, count, legend
+
+### Fixes
+- `baoyu-markdown-to-html`: fix CSS custom property regex to handle quoted values; grace/simple themes now layer default CSS
+
+## 1.73.3 - 2026-03-20
+
+### Fixes
+- `baoyu-post-to-wechat`: fix placeholder replacement to avoid shorter placeholders matching longer numbered variants
+
+## 1.73.2 - 2026-03-20
+
+### Fixes
+- `baoyu-post-to-wechat`: fix body image upload to correctly use media/uploadimg API with format and size validation (by @AICreator-Wind)
+
+### Refactor
+- `baoyu-post-to-wechat`: extract image processor module for local format conversion (WebP/BMP/GIF → JPEG/PNG) instead of material API fallback
+
+## 1.73.1 - 2026-03-18
+
+### Refactor
+- `baoyu-danger-x-to-markdown`: migrate tests from bun:test to node:test
+
+## 1.73.0 - 2026-03-18
+
+### Features
+- `baoyu-danger-x-to-markdown`: add video media support for X articles with poster image and video link rendering
+
+## 1.72.0 - 2026-03-18
+
+### Features
+- `baoyu-danger-x-to-markdown`: add MARKDOWN entity support for rendering embedded markdown/code blocks in X articles
+
+## 1.71.0 - 2026-03-17
+
+### Features
+- `baoyu-image-gen`: add Seedream reference image support for 5.0/4.5/4.0 models with model-specific size validation
+
+## 1.70.0 - 2026-03-17
+
+### Features
+- `baoyu-format-markdown`: optimize title generation with formula-based recommendations and straightforward alternatives
+- `baoyu-format-markdown`: auto-generate dual summaries (`summary` + `description`) in frontmatter
+
+## 1.69.1 - 2026-03-16
+
+### Fixes
+- `baoyu-chrome-cdp`: tighten chrome auto-connect logic to reduce false positives
+
+## 1.69.0 - 2026-03-16
+
+### Features
+- `baoyu-chrome-cdp`: support connecting to existing Chrome session (by @bviews)
+
+### Fixes
+- `baoyu-chrome-cdp`: support Chrome 146 native remote debugging in approval mode (by @bviews)
+- `baoyu-chrome-cdp`: keep HTTP validation in findExistingChromeDebugPort (by @bviews)
+- `baoyu-danger-gemini-web`: reuse openPageSession and fix orphaned tab leak (by @bviews)
+- `baoyu-danger-gemini-web`: respect explicit profile config over auto-discovery (by @bviews)
+- `baoyu-danger-gemini-web`: respect BAOYU_CHROME_PROFILE_DIR in auto-discovery skip (by @bviews)
+- `baoyu-post-to-wechat`: improve browser publishing reliability (by @cfh-7598)
+
+### Documentation
+- `baoyu-cover-image`: clarify people reference image workflow and interactive confirmation
+
+## 1.68.0 - 2026-03-14
+
+### Features
+- `baoyu-article-illustrator`: add configurable output directory (`default_output_dir`) with 4 options — `imgs-subdir`, `same-dir`, `illustrations-subdir`, `independent`
+- `baoyu-cover-image`: add character preservation from reference images — use `usage: direct` to pass people references to model for stylized likeness
+
 ## 1.67.0 - 2026-03-13
 
 ### Features
